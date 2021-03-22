@@ -23,9 +23,9 @@ http.createServer((req, res) => {
     if (err) {
       throw err;
     } else {
-      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      res.writeHead(200, { 'Content-Type': 'text/html' });
       res.write(data);
-      res.end(`The res is OK\n ${filePath}`);
+      res.end(`The response is OK\n ${filePath}`);
     }
   });
 }).listen(8080);
