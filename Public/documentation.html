@@ -1,16 +1,204 @@
 <!DOCTYPE html>
 <html lang="en-CA">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Movie API Documentation</title>
+  <link href="../css/stylesheet.css" rel="stylesheet" type="text/css">
 </head>
-  <body>
-    <main>
-      <h1>Objective:</h1>
-      <p>To build the server-side component of a movies web application. The web application will provide users with access to information about different movies, directors, and genres. Users will be able to sign up, update their personal information, and create a list of their favorite movies</p>
-    </main>
-    <footer>
-    </footer>
-  </body>
+
+<body>
+  <main>
+    <h1>Objective:</h1>
+    <p>To build the server-side component of a movies web application. The web application will provide users with
+      access to information about different movies, directors, and genres. Users will be able to sign up, update their
+      personal information, and create a list of their favorite movies</p>
+
+    <table>
+      <caption>Endpoint Documentation</caption>
+      <thead>
+        <tr>
+          <th class="colwidthlg">
+            <h2>Description</h2>
+          </th>
+          <th>
+            <h2>Method</h2>
+          </th>
+          <th class="colwidthsm">
+            <h2>URL</h2>
+          </th>
+          <th class="colwidthsm">
+            <h2>Query Parameters</h2>
+          </th>
+          <th class="colwidthmd">
+            <h2>Body of Request</h2>
+          </th>
+          <th>
+            <h2>Body of Response</h2>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td scope="row">Return a list of all the movies to the user</td>
+          <td>GET</td>
+          <td>/movies</td>
+          <td>none</td>
+          <td>none</td>
+          <td>
+            <p>
+              A JSON response with the movie database as an object<br><br>
+              <strong>e.g.</strong><br>
+              {<br>
+              &nbsp&nbsp"title": "Forrest Gump"<br>
+              },<br>
+              {<br>
+              &nbsp&nbsp"title": "Cast Away"<br>
+              },<br>
+              {<br>
+              &nbsp&nbsp"title": "The Imitation Game"<br>
+              }
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td scope="row">Return data (description, genre, director) about a single movie by title</td>
+          <td>GET</td>
+          <td>/movies/:title</td>
+          <td>title</td>
+          <td>none</td>
+          <td>
+            <p>
+              A JSON response with the requested movie title as an object<br><br>
+              <strong>e.g.</strong><br>
+              {<br>
+              &nbsp&nbsp"title": "Forrest Gump"<br>
+              }
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td scope="row">Return data about a genre description by name</td>
+          <td>GET</td>
+          <td>/movies/genres/:name</td>
+          <td>name</td>
+          <td>none</td>
+          <td>
+            <p>
+              An html response with a description of the requested genre<br><br>
+              <strong>e.g.</strong><br>
+              <strong>Science fiction (sci-fi)</strong> - a film genre that uses speculative, fictional science-based depictions of phenomena that are not fully accepted by mainstream science, such as extraterrestrial lifeforms, alien worlds, extrasensory perception and time travel, along with futuristic elements such as spacecraft, robots, cyborgs, interstellar travel or other technologies...
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td scope="row">Return data about a director (bio, birth/death year) by name</td>
+          <td>GET</td>
+          <td>/directors/:name</td>
+          <td>name</td>
+          <td>none</td>
+          <td>
+            <p>
+              An html response with a description of the requested director<br><br>
+              <strong>e.g.</strong><br>
+              <strong>Ridley Scott</strong> - an English film director and producer. He has directed the science fiction horror film Alien, the neo-noir dystopian film Blade Runner, the road adventure film Thelma & Louise...
+            </p>
+        </tr>
+        <tr>
+          <td scope="row">Allow new users to register</td>
+          <td>POST</td>
+          <td>/users</td>
+          <td>none</td>
+          <td>
+            <p>
+              Type: JSON<br><br>
+              <strong>e.g.</strong><br>
+              {<br>
+              &nbsp&nbspuserId: int<br>
+              &nbsp&nbspUsername: String<br>
+              &nbsp&nbspPassword: String<br>
+              &nbsp&nbspEmail: String<br>
+              &nbsp&nbspBirthday: Date<br>
+              }
+            </p>
+          </td>
+          <td>
+            <p>
+              An html response that the account has been created<br><br>
+              <strong>e.g.</strong><br>
+              Your account has been created.<br>
+              You will redirect you shortly!
+            </p>
+        </tr>
+        <tr>
+          <td scope="row">Allow users to update their user info like username</td>
+          <td>PUT</td>
+          <td>/users/:name/:nameChange</td>
+          <td>name<br>nameChange</td>
+          <td>something</td>
+          <td>
+            <p>
+              An html response showing the account has been changed<br><br>
+              <strong>e.g.</strong><br>
+              Your account username has been changed
+            </p>
+        </tr>
+        <tr>
+          <td scope="row">Allow existing users to deregister</td>
+          <td>DELETE</td>
+          <td>/users/:email</td>
+          <td>email</td>
+          <td>none</td>
+          <td>
+            <p>
+              An html response that the account has been deleted<br><br>
+              <strong>e.g.</strong><br>
+              Your account has been deleted!<br><br>
+              We're sorry to see you go, please email us at myflix@support.com and let us know how we can improve 
+            </p>
+        </tr>
+        <tr>
+          <td scope="row">Allow users to add a movie to their list of favorites</td>
+          <td>POST</td>
+          <td>/users/:name/favMovies/:title</td>
+          <td>name<br>title</td>
+          <td>
+            <p>
+              Type: JSON<br><br>
+              <strong>e.g.</strong><br>
+              {<br>
+                &nbsp&nbspname : 'User',<br>
+                &nbsp&nbspuserId: 'int',<br>
+                &nbsp&nbspfavMovies : ['movie1']<br>
+              }<br>
+            </p>
+          </td>
+          <td>
+            <p>
+              An html response that the movie selected has been added to the favourites list<br><br>
+              <strong>e.g.</strong><br>
+              Your movie has been added to your favourites list<br><br>
+            </p>
+        </tr>
+        <tr>
+          <td scope="row">Allow users to remove a movie from their list of favorites</td>
+          <td>DELETE</td>
+          <td>/users/:name/favMovies/:title</td>
+          <td>name<br>title</td>
+          <td>none</td>
+          <td>
+            <p>
+              An html response that the movie selected has been removed from the favourites list<br><br>
+              <strong>e.g.</strong><br>
+              Your movie has been removed from the favourites list<br><br>
+            </p>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+  <footer>
+  </footer>
+</body>
+
 </html>
