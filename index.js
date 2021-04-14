@@ -26,7 +26,8 @@ const auth = require('./auth')(app);
 
 /*mongoose.connect('mongodb://localhost:27017/filmquarry', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });*/
 
-mongoose.connect('process.env.CONNECTION_URI', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
+mongoose.connect(process.env.CONNECTION_URI,
+  { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 
 const allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
 
