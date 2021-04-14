@@ -24,7 +24,9 @@ app.use(cors());
 
 const auth = require('./auth')(app);
 
-mongoose.connect('mongodb://localhost:27017/movieflix', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
+/*mongoose.connect('mongodb://localhost:27017/filmquarry', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });*/
+
+mongoose.connect('process.env.CONNECTION_URI', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 
 const allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
 
@@ -150,7 +152,7 @@ app.post('/users', passport.authenticate('jwt', { session: false }), [
         Email: req.body.Email,
         DOB: req.body.DOB
       })
-        .then((newUser) => { res.status(201).send(`Thank you for subscribing to movieFlix ${newUser.Username}! You will be redirected shortly!`); })
+        .then((newUser) => { res.status(201).send(`Thank you for subscribing to filmquarry ${newUser.Username}! You will be redirected shortly!`); })
         .catch((error) => {
           console.error(error);
           res.status(500).send(`Error: ${error}`);
@@ -235,7 +237,7 @@ app.delete('/users/:Username', passport.authenticate('jwt', { session: false }),
       if (!user) {
         res.status(400).send(`${req.params.Username} was not found`);
       } else {
-        res.status(200).send(`${req.params.Username} your account has been deleted! We're sorry to see you go, please email us at movieflix@support.com and let us know how we can improve.`);
+        res.status(200).send(`${req.params.Username} your account has been deleted! We're sorry to see you go, please email us at filmquarry@support.com and let us know how we can improve.`);
       }
     })
     .catch((err) => {
