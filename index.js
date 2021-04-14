@@ -4,11 +4,14 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 require('./passport');
+const cors = require('cors');
+const { check, validationResult } = require('express-validator');
 const Models = require('./models.js');
 
 const Movies = Models.Movie;
 const Users = Models.User;
 const app = express();
+const port = process.env.PORT || 8080;
 
 app.use(bodyParser.json());
 app.use(morgan('common'));
@@ -17,10 +20,24 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('The Planet hosting the server must have exploded!');
 });
+app.use(cors());
 
 const auth = require('./auth')(app);
 
 mongoose.connect('mongodb://localhost:27017/movieflix', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
+
+const allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const message = `The CORS policy for this application doesn’t allow access from origin ${origin}`;
+      return callback(new Error(message), false);
+    }
+    return callback(null, true);
+  }
+}));
 
 //...............................................Get the Documentation HTML
 app.get('/documentation', (req, res) => {
@@ -111,7 +128,17 @@ app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) =
 });
 
 //.................................................Add a new user
-app.post('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.post('/users', passport.authenticate('jwt', { session: false }), [
+  check('Username', 'Username is required, minimum 5 characters').isLength({ min: 5 }),
+  check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+  check('Password', 'Password is required').not().isEmpty(),
+  check('Email', 'Email does not appear to be valid').isEmail()
+], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+  const hashedPassword = Users.hashPassword(req.body.Password);
   Users.findOne({ Username: req.body.Username })
     .then((user) => {
       if (user) {
@@ -119,7 +146,7 @@ app.post('/users', passport.authenticate('jwt', { session: false }), (req, res) 
       }
       Users.create({
         Username: req.body.Username,
-        Password: req.body.Password,
+        Password: hashedPassword,
         Email: req.body.Email,
         DOB: req.body.DOB
       })
@@ -137,7 +164,14 @@ app.post('/users', passport.authenticate('jwt', { session: false }), (req, res) 
 
 //..........................................Update a user's info, by username
 
-app.put('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
+app.put('/users/:Username', passport.authenticate('jwt', { session: false }), [
+  check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+  check('Email', 'Email does not appear to be valid').isEmail()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
   const preData = await Users.findOne({ Username: req.params.Username });
   console.log(preData);
   await Users.findOneAndUpdate(
@@ -210,6 +244,6 @@ app.delete('/users/:Username', passport.authenticate('jwt', { session: false }),
     });
 });
 
-app.listen(8080, () => {
-  console.log('The web server is listening on port 8080!');
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Listening on Port ${port}`);
 });
