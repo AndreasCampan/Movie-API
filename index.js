@@ -26,8 +26,7 @@ const auth = require('./auth')(app);
 
 /*mongoose.connect('mongodb://localhost:27017/filmquarry', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });*/
 
-mongoose.connect(process.env.CONNECTION_URI,
-  { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
+mongoose.connect(process.env.connection_var, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
 
@@ -45,6 +44,10 @@ app.use(cors({
 //...............................................Get the Documentation HTML
 app.get('/documentation', (req, res) => {
   res.sendFile('public/documentation.html', { root: __dirname });
+});
+
+app.get('/', (req, res) => {
+  res.status(500).send('You are now on the main page! Welcome to FilmQuarry!');
 });
 
 //...............................................Get a list of all the movies
