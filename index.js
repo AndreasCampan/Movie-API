@@ -43,7 +43,7 @@ app.use(cors({
 
 //...............................................Get the Documentation HTML
 app.get('/documentation', (req, res) => {
-  res.sendFile('public/documentation.html', { root: __dirname });
+  res.sendFile('Public/documentation.html', { root: __dirname });
 });
 
 app.get('/', (req, res) => {
