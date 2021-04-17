@@ -28,7 +28,7 @@ const auth = require('./auth')(app);
 
 mongoose.connect(process.env.connection_var, { useNewUrlParser: true, useUnifiedTopology: true });
 
-const allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+const allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://filmquarry.herokuapp.com'];
 
 app.use(cors({
   origin: (origin, callback) => {
