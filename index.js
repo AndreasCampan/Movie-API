@@ -18,7 +18,7 @@ const auth = require('./auth')(app);
 
 app.use(bodyParser.json());
 app.use(morgan('common'));
-app.use(express.static('Public'));
+app.use(express.static('public'));
 app.use((err, req, res, next) => { //middleware err handling and next?
   console.error(err.stack);
   res.status(500).send('The Planet hosting the server must have exploded!');
