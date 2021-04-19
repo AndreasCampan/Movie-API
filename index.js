@@ -19,10 +19,11 @@ const auth = require('./auth')(app);
 app.use(bodyParser.json());
 app.use(morgan('common'));
 app.use(express.static('public'));
-app.use((err, req, res, next) => { //middleware err handling and next?
+app.use((err, req, res, next) => { //err catches on the server error
   console.error(err.stack);
   res.status(500).send('The Planet hosting the server must have exploded!');
 });
+
 app.use(cors());
 
 //mongoose.connect allows the API to make CRUD operations on the dataase
@@ -124,7 +125,7 @@ app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) =
 });
 
 //.................................................Add a new user
-app.post('/users', /*passport.authenticate('jwt', { session: false }),*/ [
+app.post('/users', [
   check('Username', 'A username is required, minimum 5 characters').isLength({ min: 5 }),
   check('Username', 'The username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
   check('Password', ' A password is required').not().isEmpty(),

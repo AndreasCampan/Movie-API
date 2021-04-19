@@ -15,7 +15,7 @@ const generateJWTToken = (user) => {
 //creates a new endpoint for users to login
 module.exports = (router) => {
   router.post('/login', (req, res) => {
-    passport.authenticate('local', { session: false }, (error, user, info) => {
+    passport.authenticate('local', { session: false }, (error, user) => {
       if (error || !user) {
         return res.status(400).json({
           message: 'Something is not right',
