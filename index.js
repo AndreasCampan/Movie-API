@@ -18,7 +18,7 @@ const auth = require('./auth')(app);
 
 app.use(bodyParser.json());
 app.use(morgan('common'));
-app.use(express.static('public'));
+app.use(express.static('Public'));
 app.use((err, req, res, next) => { //middleware err handling and next?
   console.error(err.stack);
   res.status(500).send('The Planet hosting the server must have exploded!');
@@ -43,7 +43,6 @@ app.use(cors({
     return callback(null, true);
   }
 }));
-
 
 //...............................................Get the Documentation HTML
 app.get('/documentation', (req, res) => {
