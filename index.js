@@ -31,10 +31,6 @@ app.use(cors());
 
 mongoose.connect(process.env.connection_var, { useNewUrlParser: true, useUnifiedTopology: true });
 
-const allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://filmquarry.herokuapp.com'];
-
-app.use(cors());
-
 //...............................................Get the Documentation HTML
 app.get('/documentation', (req, res) => {
   res.sendFile('public/documentation.html', { root: __dirname });
