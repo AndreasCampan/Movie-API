@@ -1,38 +1,53 @@
-const express = require('express');
-const morgan = require('morgan');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const passport = require('passport');
+const express = require('express'); //Express is used to create and maintain web servers as well as manage HTTP requests. Rather than using modules (e.g., the HTTP module), you can simply use Express to route requests/responses and interact with request data.
+const morgan = require('morgan');//A logging middleware for Express
+const mongoose = require('mongoose');//ODM (object Document Mapper) enforces uniformity in the data, acts as a translator between data layer and API, also designed for async environments
+const bodyParser = require('body-parser');//The body-parser middleware module allows you to read the “body” of HTTP requests within your request handlers simply by using the code req.body.
+const passport = require('passport'); //Passport is an authentication middleware
 require('./passport');
 const cors = require('cors');
 const { check, validationResult } = require('express-validator');
-const Models = require('./models.js');
+const models = require('./models.js');
 
-const Movies = Models.Movie;
-const Users = Models.User;
-const app = express();
-const port = process.env.PORT || 8080;
+const Movies = models.Movie;
+const Users = models.User;
+const app = express(); //calling app.anything uses an instance of express
+const port = process.env.PORT || 8080; //
+const auth = require('./auth')(app);
+
+//Declaring app.use(something) before the routes means that each route request will run all the follow app.use on it.
 
 app.use(bodyParser.json());
 app.use(morgan('common'));
 app.use(express.static('public'));
-app.use((err, req, res, next) => {
+app.use((err, req, res, next) => { //middleware err handling and next?
   console.error(err.stack);
   res.status(500).send('The Planet hosting the server must have exploded!');
 });
 app.use(cors());
 
-const auth = require('./auth')(app);
+//mongoose.connect allows the API to make CRUD operations on the dataase
 
-/*mongoose.connect('mongodb://localhost:27017/filmquarry', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });*/
+/*mongoose.connect('mongodb://localhost:27017/filmquarry', { useNewUrlParser: true, useUnifiedTopology: true });*/
 
 mongoose.connect(process.env.connection_var, { useNewUrlParser: true, useUnifiedTopology: true });
 
-app.use(cors());
+const allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://filmquarry.herokuapp.com'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const message = `The CORS policy for this application doesn’t allow access from origin ${origin}`;
+      return callback(new Error(message), false);
+    }
+    return callback(null, true);
+  }
+}));
+
 
 //...............................................Get the Documentation HTML
 app.get('/documentation', (req, res) => {
-  res.sendFile('Public/documentation.html', { root: __dirname });
+  res.sendFile('public/documentation.html', { root: __dirname });
 });
 
 app.get('/', (req, res) => {
@@ -123,11 +138,11 @@ app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) =
 });
 
 //.................................................Add a new user
-app.post('/users', passport.authenticate('jwt', { session: false }), [
-  check('Username', 'Username is required, minimum 5 characters').isLength({ min: 5 }),
-  check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-  check('Password', 'Password is required').not().isEmpty(),
-  check('Email', 'Email does not appear to be valid').isEmail()
+app.post('/users', /*passport.authenticate('jwt', { session: false }),*/ [
+  check('Username', 'A username is required, minimum 5 characters').isLength({ min: 5 }),
+  check('Username', 'The username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+  check('Password', ' A password is required').not().isEmpty(),
+  check('Email', 'THe email does not appear to be valid').isEmail()
 ], (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -167,8 +182,8 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }), [
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
+  //preData creates a copy of the current user data
   const preData = await Users.findOne({ Username: req.params.Username });
-  console.log(preData);
   await Users.findOneAndUpdate(
     { Username: req.params.Username },
     {

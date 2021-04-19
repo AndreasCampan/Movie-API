@@ -7,11 +7,11 @@ const Users = Models.User;
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
+//http authentication strategy
 passport.use(new LocalStrategy({
   usernameField: 'Username',
   passwordField: 'Password'
 }, (username, password, callback) => {
-  console.log(`${username} ${password}`);
   Users.findOne({ Username: username }, (error, user) => {
     if (error) {
       console.log(error);
@@ -24,7 +24,7 @@ passport.use(new LocalStrategy({
     }
 
     if (!user.validatePassword(password)) {
-      console.log('incorrect password');
+      console.log('incorrect password here');
       return callback(null, false, { message: 'Incorrect password.' });
     }
 
@@ -33,9 +33,10 @@ passport.use(new LocalStrategy({
   });
 }));
 
+//JWT authentication strategy
 passport.use(new JWTStrategy({
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-  secretOrKey: 'your_jwt_secret'
+  secretOrKey: 'this_is_my_secret'
 }, (jwtPayload, callback) => Users.findById(jwtPayload._id)
   .then((user) => callback(null, user))
   .catch((error) => callback(error))));

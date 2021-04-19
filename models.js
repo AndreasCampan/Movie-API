@@ -10,7 +10,7 @@ const movieSchema = mongoose.Schema({
   },
 
   Director: {
-    Name: String,
+    Name: { type: String, required: true },
     Bio: String,
     Born: String,
     Died: String
@@ -24,7 +24,7 @@ const userSchema = mongoose.Schema({
   Username: { type: String, required: true },
   Password: { type: String, required: true },
   Email: { type: String, required: true },
-  DOB: Date,
+  DOB: { type: Date, required: true },
   movieFav: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }]
 });
 
@@ -34,6 +34,7 @@ userSchema.methods.validatePassword = function (password) {
   return bcrypt.compareSync(password, this.Password);
 };
 
+//The first argument is the singular name of the collection your model is for. Mongoose automatically looks for the plural, lowercased version of your model name.
 const Movie = mongoose.model('Movie', movieSchema);
 const User = mongoose.model('User', userSchema);
 
