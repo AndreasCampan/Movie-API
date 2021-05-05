@@ -12,13 +12,12 @@ const models = require('./models.js');
 const Movies = models.Movie;
 const Users = models.User;
 const app = express(); //calling app.anything uses an instance of express
-const port = process.env.PORT || 8080; //
-const auth = require('./auth')(app);
+const port = process.env.PORT || 8080;
 
 //Declaring app.use(something) before the routes means that each route request will run all the follow app.use on it.
 
 app.use(cors());
-app.options('*', cors());
+//app.options('*', cors());
 app.use(bodyParser.json());
 app.use(morgan('common'));
 app.use(express.static('public'));
@@ -33,6 +32,7 @@ app.use((err, req, res, next) => { //err catches on the server error
 
 mongoose.connect(process.env.connection_var, { useNewUrlParser: true, useUnifiedTopology: true });
 
+require('./auth')(app);
 //...............................................Get the Documentation HTML
 app.get('/documentation', (req, res) => {
   res.sendFile('public/documentation.html', { root: __dirname });
