@@ -1,10 +1,11 @@
+const cors = require('cors');
 const express = require('express'); //Express is used to create and maintain web servers as well as manage HTTP requests. Rather than using modules (e.g., the HTTP module), you can simply use Express to route requests/responses and interact with request data.
 const morgan = require('morgan');//A logging middleware for Express
 const mongoose = require('mongoose');//ODM (object Document Mapper) enforces uniformity in the data, acts as a translator between data layer and API, also designed for async environments
 const bodyParser = require('body-parser');//The body-parser middleware module allows you to read the “body” of HTTP requests within your request handlers simply by using the code req.body.
 const passport = require('passport'); //Passport is an authentication middleware
 require('./passport');
-const cors = require('cors');
+
 const { check, validationResult } = require('express-validator');
 const models = require('./models.js');
 
@@ -16,6 +17,7 @@ const auth = require('./auth')(app);
 
 //Declaring app.use(something) before the routes means that each route request will run all the follow app.use on it.
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(morgan('common'));
 app.use(express.static('public'));
@@ -23,8 +25,6 @@ app.use((err, req, res, next) => { //err catches on the server error
   console.error(err.stack);
   res.status(500).send('The Planet hosting the server must have exploded!');
 });
-
-app.use(cors());
 
 //mongoose.connect allows the API to make CRUD operations on the dataase
 
