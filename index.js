@@ -171,8 +171,8 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }), [
     return res.status(422).json({ errors: errors.array() });
   }
   //preData creates a copy of the current user data
+  const hashedPassword = Users.hashPassword(req.body.Password);
   const preData = await Users.findOne({ Username: req.params.Username });
-  const hashedPassword = await Users.hashPassword(req.body.Password);
   await Users.findOneAndUpdate(
     { Username: req.params.Username },
     {
