@@ -17,6 +17,7 @@ const port = process.env.PORT || 8080;
 //Declaring app.use(something) before the routes means that each route request will run all the follow app.use on it.
 
 app.use(cors());
+//app.options('*', cors());
 app.use(bodyParser.json());
 app.use(morgan('common'));
 app.use(express.static('public'));
@@ -177,7 +178,7 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }), [
     {
       $set: {
         Username: req.body.Username || preData.Username,
-        Password: hashedPassword(req.body.Password) || preData.Password,
+        Password: hashedPassword || preData.Password,
         Email: req.body.Email || preData.Email,
         DOB: req.body.DOB || preData.DOB
       }
