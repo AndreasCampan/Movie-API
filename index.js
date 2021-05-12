@@ -167,38 +167,57 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }), [
   check('Email', 'Email does not appear to be valid').isEmail()
 ], async (req, res) => {
   const errors = validationResult(req);
+  const preData = await Users.findOne({ Username: req.params.Username });
+  
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
-  //preData creates a copy of the current user data
-  const preData = await Users.findOne({ Username: req.params.Username });
-  // const hashedPassword = (() => {
-  //   if (req.body.Password = "") {
-  //     false;
-  //   } else {
-  //     Users.hashPassword(req.body.Password)
-  //   });
-  const hashedPassword = Users.hashPassword(req.body.Password);
-  await Users.findOneAndUpdate(
-    { Username: req.params.Username },
-    {
-      $set: {
-        Username: req.body.Username || preData.Username,
-        Password: hashedPassword || preData.Password,
-        Email: req.body.Email || preData.Email,
-        DOB: req.body.DOB || preData.DOB
+
+  if (req.body.Password == '') {
+    await Users.findOneAndUpdate(
+      { Username: req.params.Username },
+      {
+        $set: {
+          Username: req.body.Username || preData.Username,
+          Email: req.body.Email || preData.Email,
+          DOB: req.body.DOB || preData.DOB
+        }
+      },
+      { new: true },
+      (err, updateUser) => {
+        if (err) {
+          console.error(err);
+          res.status(500).send(`Error: ${err}`);
+        } else {
+          res.json(updateUser);
+        }
       }
-    },
-    { new: true },
-    (err, updateUser) => {
-      if (err) {
-        console.error(err);
-        res.status(500).send(`Error: ${err}`);
-      } else {
-        res.json(updateUser);
+    );
+  } else {
+    const hashedPassword = Users.hashPassword(req.body.Password);
+    await Users.findOneAndUpdate(
+      { Username: req.params.Username },
+      {
+        $set: {
+          Username: req.body.Username || preData.Username,
+          Password: hashedPassword,
+          Email: req.body.Email || preData.Email,
+          DOB: req.body.DOB || preData.DOB
+        }
+      },
+      { new: true },
+      (err, updateUser) => {
+        if (err) {
+          console.error(err);
+          res.status(500).send(`Error: ${err}`);
+        } else {
+          res.json(updateUser);
+        }
       }
-    }
-  );
+    );
+  }
+
+  
 });
 
 //.......................................Add a movie to users fav movies list
