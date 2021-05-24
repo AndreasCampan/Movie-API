@@ -15,7 +15,7 @@ const app = express(); //calling app.anything uses an instance of express
 const port = process.env.PORT || 8080;
 
 //Declaring app.use(something) before the routes means that each route request will run all the follow app.use on it.
-const allowedOrigins = ['http://localhost:8080', 'http://localhost:1234', 'https://film-quarry.netlify.app/', ' https://filmquarry.herokuapp.com/'];
+const allowedOrigins = ['http://localhost:8080', 'http://localhost:1234', 'https://film-quarry.netlify.app', ' https://filmquarry.herokuapp.com/'];
 
 app.use(cors({
   origin: (origin, callback) => {
