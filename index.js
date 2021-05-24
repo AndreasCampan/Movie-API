@@ -15,18 +15,8 @@ const app = express(); //calling app.anything uses an instance of express
 const port = process.env.PORT || 8080;
 
 //Declaring app.use(something) before the routes means that each route request will run all the follow app.use on it.
-const allowedOrigins = '*';
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const message = `The CORS policy for this application doesn’t allow access from origin ${origin}`;
-      return callback(new Error(message), false);
-    }
-    return callback(null, true);
-  }
-}));
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(morgan('common'));
