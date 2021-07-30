@@ -1,3 +1,8 @@
+/**
+ * @constant
+ * imports the passport authentication middleware for node.js.
+ * Used with Express
+ */
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const passportJWT = require('passport-jwt');
@@ -7,7 +12,9 @@ const Users = Models.User;
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
-//http authentication strategy
+/**
+ * http authentication strategy
+ */
 passport.use(new LocalStrategy({
   usernameField: 'Username',
   passwordField: 'Password'
@@ -33,7 +40,9 @@ passport.use(new LocalStrategy({
   });
 }));
 
-//JWT authentication strategy
+/**
+ * JWT authentication strategy
+ */
 passport.use(new JWTStrategy({
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
   secretOrKey: 'this_is_my_secret'
