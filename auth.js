@@ -13,6 +13,7 @@ const jwtSecret = 'this_is_my_secret';
 /**
  * creates a JWT token to verify the user is the same
  * @function generateJWTToken
+ * @param {object} user - The object user is passed in along with its data
  */
 const generateJWTToken = (user) => {
   return jwt.sign(user, jwtSecret, {
