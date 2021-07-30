@@ -7,10 +7,9 @@ const cors = require('cors');
 const express = require('express');
 const morgan = require('morgan');//A logging middleware for Express
 /**
- * ODM (object Document Mapper) enforces uniformity in the data, acts as a
- * translator between data layer and API, also designed for async environments
- * const mongoose = require('mongoose');
+ * Mongoose provides a straight-forward, schema-based solution to model your application data
  */
+const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 /**
  * The body-parser middleware module allows you to read the “body” of HTTP
@@ -251,8 +250,6 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }), [
       }
     );
   }
-
-  
 });
 
 //.......................................Add a movie to users fav movies list
